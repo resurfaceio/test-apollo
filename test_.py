@@ -2,7 +2,7 @@ import time
 import trino
 import pytest
 import requests
-
+   
 
 
     
@@ -35,6 +35,8 @@ conn.close()
         
 columns = columns1
 rows = rows1
+        
+
 
 def test_empty():    
 	assert len(rows) > 0
@@ -74,12 +76,12 @@ def test_columns():
 	assert columns["size_request_bytes"] == "integer"
 	assert columns["size_response_bytes"] == "integer"
         
-def test_get_404():
+def test_get_200():
 	assert rows[0][12] == "GET"
 	assert rows[0][14] == "http://localhost/ping"
-	assert rows[0][17] == "404"
-	assert rows[0][18] == "text/html; charset=utf-8"
-	assert rows[0][20] == None
+	assert rows[0][17] == "200"
+	assert rows[0][18] == "application/json; charset=utf-8"
+	assert rows[0][20] == "OBJECT"
         
 def test_post_404():
 	assert rows2[0][12] == "POST"
@@ -87,7 +89,7 @@ def test_post_404():
 	assert rows2[0][17] == "404"
 	assert rows2[0][18] == "text/html; charset=utf-8"
 	
-	        
+	
 '''
 COLUMNS
 'id': 'varchar',
@@ -116,14 +118,14 @@ COLUMNS
  'size_response_bytes': 'integer'
  
 ROWS
-['c6021344-83a3-40f1-a5f5-c66d7aa2331d',
+['c66928e9-7b3b-4719-bf24-d1d37ac4bc9e',
   'Unknown',
   'Unknown',
   'Python-Requests',
   None,
   None,
-  '44251e962b92',
-  3,
+  '572e2ccefc44',
+  4,
   None,
   None,
   '[["host","localhost"],["accept-encoding","gzip, deflate"],["accept","*/*"],["connection","keep-alive"]]',
@@ -132,45 +134,43 @@ ROWS
   '[]',
   'http://localhost/ping',
   'python-requests/2.22.0',
-  '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /ping</pre>\n</body>\n</html>\n',
-  '404',
-  'text/html; charset=utf-8',
-  '[["x-powered-by","Express"],["access-control-allow-origin","*"],["content-security-policy","default-src \\u0027none\\u0027"],["x-content-type-options","nosniff"],["content-length","143"]]',
-  None,
-  1626888160009,
+  '{"msg":"pong"}',
+  '200',
+  'application/json; charset=utf-8',
+  '[["x-powered-by","Express"],["content-length","14"],["etag","W/\\"e-iBi3XUufBylnoseozcoWz+s0EIA\\""],["set-cookie","connect.sid\\u003ds%3ADR9IQh00xO8E__6R0rBJS5J3H-_4UzpB.elQm34w3RJ6h9PFQW2L9MCMAis0qYnDZq%2BiVhAghOTs; Path\\u003d/; Expires\\u003dWed, 21 Jul 2021 17:48:57 GMT; HttpOnly"]]',
+  'OBJECT',
+  1626889677781,
   123,
-  313]
+  290]
+
 -------------------------------
 response_ping.__getstate__()
 
-{{'_content': b'<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /ping</pre>\n</body>\n</html>\n',
- 'status_code': 404,
- 'headers': {'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '143', 'Date': 'Wed, 21 Jul 2021 17:27:18 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'},
+{'_content': b'{"msg":"pong"}',
+ 'status_code': 200,
+ 'headers': {'X-Powered-By': 'Express', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '14', 'ETag': 'W/"e-iBi3XUufBylnoseozcoWz+s0EIA"', 'Set-Cookie': 'connect.sid=s%3A-DF-dS3EywwvAkEH6AqeTjWLVZyBger2.3cZ8ASlcp7CSSyz7RbFFAXdildLZc720cmbHeBE9BA4; Path=/; Expires=Wed, 21 Jul 2021 17:50:15 GMT; HttpOnly', 'Date': 'Wed, 21 Jul 2021 17:49:15 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'},
  'url': 'http://localhost:80/ping',
  'history': [],
  'encoding': 'utf-8',
- 'reason': 'Not Found',
- 'cookies': <RequestsCookieJar[]>,
- 'elapsed': datetime.timedelta(microseconds=3376),
- 'request': <PreparedRequest [GET]>}  
-------------------------------
+ 'reason': 'OK',
+ 'cookies': <RequestsCookieJar[Cookie(version=0, name='connect.sid', value='s%3A-DF-dS3EywwvAkEH6AqeTjWLVZyBger2.3cZ8ASlcp7CSSyz7RbFFAXdildLZc720cmbHeBE9BA4', port=None, port_specified=False, domain='localhost.local', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=False, expires=1626889815, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)]>,
+ 'elapsed': datetime.timedelta(microseconds=4852),
+ 'request': <PreparedRequest [GET]>}
+
+---------------------------------
 response_submit.__getstate__()
 
-{'_content': b'<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /submit</pre>\n</body>\n</html>\n',
+{'_content': b'{"detail": "/submit not found"}',
  'status_code': 404,
- 'headers': {'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '146', 'Date': 'Wed, 21 Jul 2021 17:27:18 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'},
+ 'headers': {'Server': 'gunicorn', 'Date': 'Wed, 21 Jul 2021 17:43:12 GMT', 'Connection': 'close', 'Content-Type': 'application/json', 'X-Frame-Options': 'DENY', 'Content-Length': '31', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin'},
  'url': 'http://localhost:80/submit',
  'history': [],
- 'encoding': 'utf-8',
+ 'encoding': None,
  'reason': 'Not Found',
  'cookies': <RequestsCookieJar[]>,
- 'elapsed': datetime.timedelta(microseconds=2676),
+ 'elapsed': datetime.timedelta(microseconds=14894),
  'request': <PreparedRequest [POST]>}
-
-
-
-
-'''
-
-        
+ 
+ 
+'''        
 
